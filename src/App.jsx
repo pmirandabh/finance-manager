@@ -167,13 +167,15 @@ const MainApp = () => {
 
       // Save ONLY the new recurring instances FIRST (before updating state)
       if (newTransactions.length > 0) {
-        // Save each new transaction individually and wait for all to complete
-        for (const transaction of newTransactions) {
-          await StorageService.saveTransaction(user.id, transaction);
-        }
+        // Save all new transactions in parallel and wait for all to complete
+        await Promise.all(
+          newTransactions.map(transaction =>
+            StorageService.saveTransaction(user.id, transaction)
+          )
+        );
       }
 
-      // THEN update local state (after saving to database)
+      // THEN update local state (after ALL transactions are saved)
       setTransactions(processedTransactions);
       setCategories(loadedCategories);
 
