@@ -27,3 +27,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backups and temporary files
+*.zip
+*.backup
+*_backup/
+temp_*/
+Backup_*/
+backup_*/
