@@ -165,16 +165,17 @@ const MainApp = () => {
         !loadedTransactions.some(loaded => loaded.id === t.id)
       );
 
-      setTransactions(processedTransactions);
-      setCategories(loadedCategories);
-
-      // Save ONLY the new recurring instances (not all transactions)
+      // Save ONLY the new recurring instances FIRST (before updating state)
       if (newTransactions.length > 0) {
-        // Save each new transaction individually
+        // Save each new transaction individually and wait for all to complete
         for (const transaction of newTransactions) {
           await StorageService.saveTransaction(user.id, transaction);
         }
       }
+
+      // THEN update local state (after saving to database)
+      setTransactions(processedTransactions);
+      setCategories(loadedCategories);
 
       // Mark data as loaded
       setHasLoadedData(true);
