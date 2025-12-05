@@ -23,13 +23,18 @@ export const processRecurringTransactions = (transactions) => {
         const targetMonthKey = getMonthKey(targetMonth);
 
         templates.forEach(template => {
-            // Check if already exists for this month
-            const exists = nonTemplates.some(t =>
+            // Check if already exists for this month (in loaded transactions OR in generated array)
+            const existsInLoaded = nonTemplates.some(t =>
                 t.templateId === template.id &&
                 t.competenceMonth === targetMonthKey
             );
 
-            if (!exists && !generated.some(t => t.templateId === template.id && t.competenceMonth === targetMonthKey)) {
+            const existsInGenerated = generated.some(t =>
+                t.templateId === template.id &&
+                t.competenceMonth === targetMonthKey
+            );
+
+            if (!existsInLoaded && !existsInGenerated) {
                 // Calculate new due date if template has one
                 let newDueDate = null;
                 if (template.dueDate) {
@@ -72,7 +77,8 @@ export const processRecurringTransactions = (transactions) => {
                     isRecurring: true,
                     isTemplate: false,
                     templateId: template.id,
-                    notes: template.notes || ''
+                    notes: template.notes || '',
+                    isSkipped: false
                 });
             }
         });
