@@ -160,18 +160,20 @@ const MainApp = () => {
       // Process recurring transactions
       const processedTransactions = processRecurringTransactions(loadedTransactions);
 
-      // Check if new transactions were generated
-      let shouldSaveTransactions = false;
-      if (processedTransactions.length !== loadedTransactions.length) {
-        shouldSaveTransactions = true;
-      }
+      // Find only NEW transactions that were generated
+      const newTransactions = processedTransactions.filter(t =>
+        !loadedTransactions.some(loaded => loaded.id === t.id)
+      );
 
       setTransactions(processedTransactions);
       setCategories(loadedCategories);
 
-      // Save back if new recurring instances were generated
-      if (shouldSaveTransactions) {
-        await saveTransactions(processedTransactions);
+      // Save ONLY the new recurring instances (not all transactions)
+      if (newTransactions.length > 0) {
+        // Save each new transaction individually
+        for (const transaction of newTransactions) {
+          await StorageService.saveTransaction(user.id, transaction);
+        }
       }
 
       // Mark data as loaded
