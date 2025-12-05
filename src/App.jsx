@@ -199,8 +199,34 @@ const MainApp = () => {
     // Save the new transaction individually
     await StorageService.saveTransaction(user.id, newTransaction);
 
-    // Update local state by adding the new transaction
-    setTransactions(prev => [newTransaction, ...prev]);
+    // If it's a recurring template, process and generate instances
+    if (newTransaction.isRecurring && newTransaction.isTemplate) {
+      // Add template to current transactions
+      const transactionsWithTemplate = [newTransaction, ...transactions];
+
+      // Process recurring transactions to generate instances
+      const processedTransactions = processRecurringTransactions(transactionsWithTemplate);
+
+      // Find only NEW instances that were generated
+      const newInstances = processedTransactions.filter(t =>
+        !transactionsWithTemplate.some(existing => existing.id === t.id)
+      );
+
+      // Save new instances to database
+      if (newInstances.length > 0) {
+        await Promise.all(
+          newInstances.map(transaction =>
+            StorageService.saveTransaction(user.id, transaction)
+          )
+        );
+      }
+
+      // Update state with all transactions (template + instances)
+      setTransactions(processedTransactions);
+    } else {
+      // For non-recurring transactions, just add to state
+      setTransactions(prev => [newTransaction, ...prev]);
+    }
 
     // Highlight the new transaction
     setLastAddedTransactionId(newTransaction.id);
