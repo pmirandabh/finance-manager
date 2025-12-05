@@ -183,8 +183,7 @@ export const StorageService = {
                 competenceMonth: t.competence_month,
                 isRecurring: t.is_recurring,
                 isTemplate: t.is_template,
-                isRecurring: t.is_recurring,
-                isTemplate: t.is_template,
+                templateId: t.template_id,
                 isPaid: t.is_paid,
                 isSkipped: t.is_skipped
             }));
