@@ -217,6 +217,7 @@ export const StorageService = {
                 competence_month: transaction.competenceMonth,
                 is_recurring: transaction.isRecurring || false,
                 is_template: transaction.isTemplate || false,
+                template_id: transaction.templateId || null,
                 is_paid: transaction.isPaid || false,
                 is_skipped: transaction.isSkipped || false
             };
