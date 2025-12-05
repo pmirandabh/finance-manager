@@ -35,3 +35,8 @@ dist-ssr
 temp_*/
 Backup_*/
 backup_*/
+
+# Electron build outputs
+distribuicao/
+release/
+dist-electron/
