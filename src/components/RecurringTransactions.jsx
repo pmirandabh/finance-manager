@@ -229,7 +229,7 @@ const RecurringTransactions = ({ transactions, onPayTransaction, onDeleteTransac
                 isOpen={!!transactionToDelete}
                 transaction={transactionToDelete}
                 onConfirm={handleConfirmDelete}
-                onCancel={handleCancelDelete}
+                onClose={handleCancelDelete}
             />
 
             <SkipTransactionModal

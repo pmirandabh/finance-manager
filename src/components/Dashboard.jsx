@@ -185,7 +185,7 @@ const Dashboard = ({ transactions, categories, onDeleteTransaction, onEditTransa
                 isOpen={!!transactionToDelete}
                 transaction={transactionToDelete}
                 onConfirm={handleConfirmDelete}
-                onCancel={handleCancelDelete}
+                onClose={handleCancelDelete}
             />
         </div>
     );
