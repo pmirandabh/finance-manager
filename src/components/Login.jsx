@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onSwitchToRegister }) => {
     const { t } = useLanguage();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +23,7 @@ const Login = ({ onSwitchToRegister }) => {
     useEffect(() => {
         const loginError = localStorage.getItem('loginError');
         if (loginError === 'blocked') {
-            setError('🚫 ' + t('auth.loginError')); // Melhorar mensagem de bloqueio se tiver chave específica
+            setError('🚫 ' + t('auth.loginError'));
             localStorage.removeItem('loginError');
         }
     }, [t]);
@@ -38,7 +40,7 @@ const Login = ({ onSwitchToRegister }) => {
             await resetPassword(resetEmail);
             setResetStatus({
                 type: 'success',
-                message: '✅ ' + t('auth.registerSuccess') // Reusing success message or create specific one
+                message: '✅ ' + t('auth.registerSuccess')
             });
             setTimeout(() => {
                 setShowForgotPassword(false);
@@ -65,6 +67,7 @@ const Login = ({ onSwitchToRegister }) => {
         setIsLoading(true);
         try {
             await login(email, password);
+            navigate('/');
         } catch (err) {
             console.error('Login error:', err);
             setError(t('auth.loginError'));
