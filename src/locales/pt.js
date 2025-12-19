@@ -148,7 +148,8 @@ export const pt = {
         confirmPayment: 'Confirmar Pagamento',
         confirmReceipt: 'Confirmar Recebimento',
         skipPending: 'Dispensar pendência (não pagar/receber neste mês)',
-        deletePending: 'Excluir Pendência'
+        deletePending: 'Excluir Pendência',
+        onlyCurrentMonth: 'Somente mês atual'
     },
     transactionForm: {
         newTitle: 'Nova Transação',

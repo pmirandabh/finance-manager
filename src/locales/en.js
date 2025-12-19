@@ -148,7 +148,8 @@ export const en = {
         confirmPayment: 'Confirm Payment',
         confirmReceipt: 'Confirm Receipt',
         skipPending: 'Skip pending (do not pay/receive this month)',
-        deletePending: 'Delete Pending'
+        deletePending: 'Delete Pending',
+        onlyCurrentMonth: 'Current month only'
     },
     transactionForm: {
         newTitle: 'New Transaction',

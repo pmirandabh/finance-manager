@@ -226,7 +226,7 @@ const RecurringTransactions = ({ transactions, onPayTransaction, onDeleteTransac
                         onChange={(e) => setShowCurrentMonthOnly(e.target.checked)}
                         style={{ cursor: 'pointer' }}
                     />
-                    {t('pending.currentMonthOnly') || 'Mês Atual'}
+                    {t('pending.onlyCurrentMonth')}
                 </label>
             </div>
 
