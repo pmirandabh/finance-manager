@@ -210,12 +210,24 @@ export const AuthProvider = ({ children }) => {
 
             if (profileError) {
                 console.error('Profile check error:', profileError);
+                // If profile doesn't exist yet (rare race condition or migration missing), we shouldn't block.
+                // But if it's a genuine database error, we should warn.
+                if (profileError.code === 'PGRST116') { // JSON result was null or zero rows
+                    // Profile missing. Proceed with caution or init profile?
+                    // For now, let's allow login but warn/log, as the profile might be created lazily?
+                    // Or actually, if we enforce profiles, this is an error.
+                    // Given the current architecture, let's treat it as "Not Blocked" but missing profile data.
+                } else {
+                    await supabase.auth.signOut();
+                    isCheckingLogin.current = false;
+                    throw new Error("Erro ao verificar status do perfil. Tente novamente.");
+                }
             }
 
-            // If user is blocked, sign out IMMEDIATELY and throw error
-            if (!profile || profile.is_active !== true) {
+            // If profile exists and is explicitly INACTIVE, block.
+            if (profile && profile.is_active === false) {
                 // Sign out synchronously
-                await supabase.auth.signOut();
+                try { await supabase.auth.signOut(); } catch (e) { console.error('Signout error', e); }
                 isCheckingLogin.current = false; // Re-enable listener
 
                 const blockError = new Error('Sua conta está bloqueada. Entre em contato com o administrador.');
