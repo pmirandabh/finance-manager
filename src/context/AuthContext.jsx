@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         if (!user) return;
 
         let logoutTimer;
-        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+        const TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 
         const resetTimer = () => {
             if (logoutTimer) clearTimeout(logoutTimer);

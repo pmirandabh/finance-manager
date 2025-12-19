@@ -7,8 +7,28 @@ import { useLanguage } from '../context/LanguageContext';
 
 const RecurringTransactions = ({ transactions, onPayTransaction, onDeleteTransaction, onSkipTransaction, categories }) => {
     const { t, locale, currency } = useLanguage();
-    // Filter all pending transactions (recurring or manual) that are not templates and not skipped
-    const pendingTransactions = transactions.filter(t => !t.isPaid && !t.isTemplate && !t.isSkipped);
+    const [showCurrentMonthOnly, setShowCurrentMonthOnly] = useState(false);
+
+    // Filter pending transactions (not paid, not template, not skipped)
+    const pendingTransactions = transactions
+        .filter(t => {
+            if (t.isPaid || t.isTemplate || t.isSkipped) return false;
+
+            // Current month filter
+            if (showCurrentMonthOnly) {
+                const now = new Date();
+                const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                if (t.competenceMonth !== currentMonthKey) return false;
+            }
+            return true;
+        })
+        .sort((a, b) => {
+            // Sort by Due Date (asc), then Competence
+            // If no due date, use competence month as fallback for sorting
+            const dateA = a.dueDate || a.competenceMonth || '9999';
+            const dateB = b.dueDate || b.competenceMonth || '9999';
+            return dateA.localeCompare(dateB);
+        });
 
     const pendingIncome = pendingTransactions.filter(t => t.type === 'income');
     const pendingExpense = pendingTransactions.filter(t => t.type === 'expense');
@@ -197,7 +217,18 @@ const RecurringTransactions = ({ transactions, onPayTransaction, onDeleteTransac
 
     return (
         <div className="glass-panel card" style={{ transition: 'all 0.3s ease', padding: '15px' }}>
-            <h2 style={{ fontSize: '1rem', marginBottom: '15px' }}>📅 {t('pending.title')}</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                <h2 style={{ fontSize: '1rem', margin: 0 }}>📅 {t('pending.title')}</h2>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <input
+                        type="checkbox"
+                        checked={showCurrentMonthOnly}
+                        onChange={(e) => setShowCurrentMonthOnly(e.target.checked)}
+                        style={{ cursor: 'pointer' }}
+                    />
+                    {t('pending.currentMonthOnly') || 'Mês Atual'}
+                </label>
+            </div>
 
             {pendingTransactions.length === 0 ? (
                 <p className="text-muted" style={{ textAlign: 'center', padding: '15px', margin: 0, fontSize: '0.9rem' }}>

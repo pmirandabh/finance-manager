@@ -18,7 +18,7 @@ const CategorySelector = ({ categories, selectedCategoryId, type, onChange }) =>
                         const val = e.target.value;
                         onChange(val);
                     }}
-                    style={{ paddingLeft: selectedCategory ? '40px' : '10px' }}
+                    style={{ paddingLeft: selectedCategory ? '50px' : '10px' }}
                 >
                     <option value="">Selecione uma categoria...</option>
                     {filteredCategories.map(category => (
